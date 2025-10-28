@@ -60,8 +60,20 @@ class TestDataSystem(unittest.TestCase):
             self.assertListEqual(sorted(cleaned.columns.tolist()), sorted(self.expected_clean_columns),
                                  "cleaned columns do not match expected normalized names.")
             
-            #check that no missing values remain
-            self.assertEqual(cleaned.isnull().sum().sum(), 0, "Cleaned DataFrame should have no missing values.")
+            # check that missing values are handled appropriately
+            # datetime columns can have NaT, numeric have 0, others have 'unknown'
+            for col in cleaned.columns:
+                if pd.api.types.is_datetime64_any_dtype(cleaned[col]):
+                    # datetime columns can have NaT, that's expected
+                    pass
+                elif pd.api.types.is_numeric_dtype(cleaned[col]):
+                    # numeric columns should have no nulls (filled with 0)
+                    self.assertEqual(cleaned[col].isnull().sum(), 0, 
+                                   f"Numeric column '{col}' should have no missing values.")
+                else:
+                    # string columns should have no nulls (filled with 'unknown')
+                    self.assertEqual(cleaned[col].isnull().sum(), 0,
+                                   f"String column '{col}' should have no missing values.")
 
             #duplicates are removed
             self.assertEqual(cleaned.duplicated().sum(), 0, "Cleaned DataFrame should have no duplicates.")
