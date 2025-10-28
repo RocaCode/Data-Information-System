@@ -16,7 +16,11 @@ def infer_and_convert_series(s: pd.Series) -> pd.Series:
     if not pd.api.types.is_object_dtype(s):
         return s
     
+    # Drop NaN and empty strings for inference
     sample = s.dropna()
+    if pd.api.types.is_string_dtype(sample) or pd.api.types.is_object_dtype(sample):
+        sample = sample[sample.astype(str).str.strip() != '']
+    
     if sample.empty:
         return s
     # Try datetime first
