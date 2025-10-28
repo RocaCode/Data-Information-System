@@ -87,7 +87,7 @@ class TestDataSystem(unittest.TestCase):
         df = pd.DataFrame({
             'A': [1, 2, 3, 4, 5], 
             'B': [2, 4, 6, 8, 10], # perfect correlation with A
-            'C': [5, 3, 1, 0, -1] # not correlated 
+            'C': [5, 2, 8, 1, 3] # random values, not correlated 
         })
 
         # Save to temporary CSV file

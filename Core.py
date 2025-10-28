@@ -69,10 +69,12 @@ def clean_file(file_path):
             if pd.api.types.is_object_dtype(df[col]):
                 df[col] = infer_and_convert_series(df[col])
 
-        # fill missing values: numeric -> 0, others -> 'unknown'
+        # fill missing values: numeric -> 0, datetime -> NaT, others -> 'unknown'
         for col in df.columns:
             if pd.api.types.is_numeric_dtype(df[col]):
                 df[col] = df[col].fillna(0)
+            elif pd.api.types.is_datetime64_any_dtype(df[col]):
+                df[col] = df[col].fillna(pd.NaT)
             else:
                 df[col] = df[col].fillna('unknown')
 
