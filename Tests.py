@@ -90,14 +90,23 @@ class TestDataSystem(unittest.TestCase):
             'C': [5, 3, 1, 0, -1] # not correlated 
         })
 
-        removed_col = find_similar_col_to_remove(df)
+        # Save to temporary CSV file
+        temp_file = 'temp_test_correlation.csv'
+        df.to_csv(temp_file, index=False)
 
-        #check if B was dropped due to high correlation
-        self.assertNotIn('B', removed_col.columns)
+        try:
+            removed_col = find_similar_col_to_remove(temp_file)
 
-        #check to make sure that A and C are still in the data
-        self.assertIn('A', removed_col.columns)
-        self.assertIn('C', removed_col.columns)
+            #check if B was dropped due to high correlation
+            self.assertNotIn('B', removed_col.columns)
+
+            #check to make sure that A and C are still in the data
+            self.assertIn('A', removed_col.columns)
+            self.assertIn('C', removed_col.columns)
+        finally:
+            # Clean up temp file
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
 
     def run_test():
         """

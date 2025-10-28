@@ -30,10 +30,15 @@ def get_file_hash(file_path):
 
 def detect_file_type(file_path):
     """detect file type by examining file content."""
+    # First try file extension as a fallback
+    extension = file_path.lower().split('.')[-1]
+    
+    # Use magic to detect mime type
     mime = magic.Magic(mime=True)
     file_type = mime.from_file(file_path)
 
-    if file_type == 'text/csv':
+    # CSV files are often detected as text/plain, so check extension too
+    if file_type == 'text/csv' or (file_type == 'text/plain' and extension == 'csv'):
         return 'csv'
     elif file_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
         return 'excel'
