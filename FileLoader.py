@@ -89,7 +89,8 @@ def load_csv_in_chunks(file_path, chunk_size=10000):
 @lru_cache(maxsize=32)
 def load_file_cached(file_path, file_hash):
     """Load file with caching based on content hash."""
-    return load_files(file_path)
+    # Return a single DataFrame for the given file path (not the batch loader)
+    return load_file(file_path)
 
 #Main interface functions
 def load_file(file_path):
